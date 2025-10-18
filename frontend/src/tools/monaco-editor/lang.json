@@ -1,0 +1,27 @@
+{
+  "": [""],
+  "html": [
+    ".html",
+    ".htm",
+    ".shtml",
+    ".xhtml",
+    ".mdoc",
+    ".jsp",
+    ".asp",
+    ".aspx",
+    ".jshtm"
+  ],
+  "css": [".css"],
+  "less": [".less"],
+  "scss": [".scss"],
+  "ini": [".ini", ".properties", ".gitconfig"],
+  "java": [".java", ".jav"],
+  "javascript": [".js", ".es6", ".jsx", ".mjs", ".sql"],
+  "sql": [".sql"],
+  "typescript": [".ts"],
+  "json": [".json"],
+  "shell": [".sh", ".bash"],
+  "bat": [".bat", ".cmd"],
+  "yaml": [".yaml", ".yml"],
+  "php": [".php", ".php4", ".php5", ".phtml", ".ctp"]
+}

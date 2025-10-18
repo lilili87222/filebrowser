@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  editor: ./runtime/editor/
+  #预览的url路由配置
+  preview:
+    url: /
+    location: F:/filebrowser_home/doc_release/
+filebrowser:
+  home: F:/filebrowser_home/
+  cache: ./.cache
+  username: root
+  password: root
+log:
+  level: debug
+

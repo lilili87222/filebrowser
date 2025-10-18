@@ -1,0 +1,200 @@
+info:
+  contact: {}
+paths:
+  /file/create:
+    post:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 新建文件名
+        in: query
+        name: name
+        required: true
+        type: string
+      responses: {}
+  /file/delete:
+    post:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 强制
+        in: query
+        name: force
+        type: boolean
+      responses: {}
+  /file/download:
+    post:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses: {}
+  /file/list:
+    get:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        type: string
+      responses: {}
+  /file/mkdir:
+    post:
+      parameters:
+      - description: 文件夹路径
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 新建文章名
+        in: query
+        name: name
+        required: true
+        type: string
+      responses: {}
+  /file/move:
+    post:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 目标路径
+        in: query
+        name: dest
+        required: true
+        type: string
+      responses: {}
+  /file/preview:
+    get:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses: {}
+  /file/read:
+    get:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses: {}
+  /file/rename:
+    post:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 新名称
+        in: query
+        name: name
+        required: true
+        type: string
+      responses: {}
+  /file/save:
+    post:
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 文件内容
+        in: query
+        name: content
+        required: true
+        type: string
+      responses: {}
+  /file/unzip:
+    get:
+      description: 解压文件
+      parameters:
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses: {}
+      summary: 解压ZIP
+  /file/upload:
+    post:
+      parameters:
+      - description: 文件夹路径
+        in: query
+        name: path
+        required: true
+        type: string
+      - description: 上传的文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses: {}
+  /hugo/build:
+    get:
+      description: 生成站点
+      parameters:
+      - description: 文件夹路径path
+        in: query
+        name: path
+        required: true
+        type: string
+      responses: {}
+      summary: 生成站点
+  /user/login:
+    post:
+      description: 登录账号
+      parameters:
+      - description: 用户名
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: json
+      summary: 登录
+  /user/loginout:
+    get:
+      description: 退出登录
+      responses:
+        "200":
+          description: success
+          schema:
+            type: json
+      summary: 退出
+  /user/userinfo:
+    get:
+      description: 获取用户信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: json
+      summary: 用户信息
+swagger: "2.0"

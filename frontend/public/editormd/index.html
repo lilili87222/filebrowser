@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- 页面中添加css -->
+    <link rel="stylesheet" href="/editor/editormd/css/style.css" />
+    <link rel="stylesheet" href="/editor/editormd/css/editormd.css" />
+  </head>
+  <body>
+    <!-- 页面中添加div -->
+    <div id="editormd">
+      <textarea style="display: none"></textarea>
+    </div>
+    <!-- 页面中添加js -->
+    <script
+      type="text/javascript"
+      src="/editor/editormd/js/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/editor/editormd/js/editormd.min.js"
+    ></script>
+    <script type="text/javascript">
+      var editor = editormd('editormd', {
+        width: '100%',
+        height: '100%',
+        codeFold: true,
+        markdown: '',
+        saveHTMLToTextarea: true,
+        htmlDecode: true,
+        searchReplace: true,
+        emoji: true,
+        taskList: true,
+        tocm: true,
+        tex: true,
+        flowChart: true,
+        sequenceDiagram: true,
+        path: '/editor/editormd/lib/',
+        imageUpload: true,
+        imageFormats: ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'webp'],
+      });
+      function debounce(
+        cb,
+        delay = 200,
+        options = {
+          immediate: false,
+        }
+      ) {
+        let timer = null,
+          isInvoke = true;
+        const { immediate } = options;
+        function _(...arg) {
+          if (timer) clearTimeout(timer);
+          if (immediate && isInvoke) {
+            cb(...arg);
+            isInvoke = false;
+            timer = null;
+          } else {
+            timer = setTimeout(() => {
+              cb(...arg);
+              timer = null;
+              isInvoke = true;
+            }, delay);
+          }
+        }
+        _.close = function () {
+          clearTimeout(timer);
+        };
+        return _;
+      }
+      window.onload = function () {
+        let mdCache;
+        let invoke = true;
+        const errorMsg = '加载markdown内容出现错误!';
+        function postMessage(msg, code, data = 'handleNet') {
+          window.parent.postMessage(
+            {
+              msg,
+              code,
+              data,
+              invoke,
+            },
+            '*'
+          );
+          invoke = true;
+        }
+        function judgeStatus(res, msg = errorMsg) {
+          try {
+            const { code, data } = res;
+            if (res.msg) msg = res.msg;
+            if (code !== 200) {
+              postMessage(msg, code);
+              return false;
+            }
+            return true;
+          } catch (error) {
+            postMessage(msg, 500);
+            return false;
+          }
+        }
+        const debounced = debounce(() => {
+          try {
+            const content = editor.getMarkdown();
+            postMessage(content, 200, 'handleSave');
+          } catch (error) {
+            postMessage('获取 markdown 内容失败!', 500);
+          }
+        }, 100);
+        
+        editor.on('fullscreen', () => {
+          postMessage('全屏显示', 200, 'fullscreen');
+        });
+        editor.on('fullscreenExit', () => {
+          postMessage('退出全屏显示', 200, 'fullscreenExit');
+        });
+
+        window.addEventListener('message', (e) => {
+          if (e.data.method === 'loadContent') {
+            mdCache = e.data.args;
+            loadContent(e.data.args);
+          }
+        });
+        document.addEventListener('keydown', (e) => {
+          if (
+            e.keyCode === 83 &&
+            (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)
+          ) {
+            e.preventDefault();
+            const content = editor.getMarkdown();
+            postMessage(content, 200, 'saveContent');
+          }
+        });
+
+        function loadContent(args) {
+          const { server, file } = args;
+          fetch(server, {
+            method: 'GET',
+          })
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              if (judgeStatus(data)) {
+                invoke = false;
+                editor.config('imageUploadURL', file);
+                editor.setValue(data.data);
+                editor.on('change', debounced);
+              }
+            })
+            .catch((err) => {
+              postMessage(errorMsg, 500);
+            });
+        }
+      };
+    </script>
+  </body>
+</html>
